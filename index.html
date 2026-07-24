@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Formularz do przygotowania protokołu przekazania sprzętu.">
+    <title>Protokół przekazania sprzętu</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f3f6fb;
+        --surface: #ffffff;
+        --surface-muted: #f8fafc;
+        --text: #172033;
+        --text-muted: #64748b;
+        --border: #d9e1ec;
+        --border-strong: #bcc9da;
+        --accent: #2457d6;
+        --accent-dark: #1c43ac;
+        --accent-soft: #eaf0ff;
+        --danger: #b42318;
+        --radius-lg: 20px;
+        --radius-md: 10px;
+        --shadow: 0 22px 55px rgba(36, 57, 92, 0.12), 0 3px 12px rgba(36, 57, 92, 0.05);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+        background: var(--bg);
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 40px 20px;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 10% 0%, rgba(215, 228, 255, 0.85), transparent 30%),
+          var(--bg);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .page-shell {
+        width: min(100%, 920px);
+        margin: 0 auto;
+      }
+
+      .form-card {
+        overflow: hidden;
+        border: 1px solid rgba(188, 201, 218, 0.75);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .form-header {
+        padding: 34px 40px 30px;
+        border-bottom: 1px solid #e5ebf3;
+        background: linear-gradient(135deg, #ffffff 0%, #f7f9ff 100%);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 12px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 22px;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--accent);
+        content: "";
+      }
+
+      h1 {
+        margin: 0;
+        color: #101828;
+        font-size: clamp(26px, 4vw, 36px);
+        font-weight: 760;
+        letter-spacing: -0.035em;
+        line-height: 1.1;
+      }
+
+      .form-intro {
+        max-width: 650px;
+        margin: 12px 0 0;
+        color: var(--text-muted);
+        font-size: 15px;
+      }
+
+      form {
+        padding: 32px 40px 38px;
+      }
+
+      .form-section + .form-section {
+        margin-top: 30px;
+        padding-top: 28px;
+        border-top: 1px solid #e8edf4;
+      }
+
+      .section-heading {
+        margin: 0 0 18px;
+        color: #25324a;
+        font-size: 16px;
+        font-weight: 740;
+        letter-spacing: -0.01em;
+      }
+
+      .field-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px 20px;
+      }
+
+      .field {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .field--full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        color: #344054;
+        font-size: 13px;
+        font-weight: 680;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        outline: none;
+        color: var(--text);
+        background: var(--surface-muted);
+        font: inherit;
+        font-size: 15px;
+        transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+      }
+
+      input,
+      select {
+        min-height: 46px;
+        padding: 0 13px;
+      }
+
+      select {
+        cursor: pointer;
+      }
+
+      textarea {
+        min-height: 126px;
+        padding: 12px 13px;
+        resize: vertical;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: #98a2b3;
+      }
+
+      input:hover,
+      select:hover,
+      textarea:hover {
+        border-color: var(--border-strong);
+        background: #fff;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--accent);
+        background: #fff;
+        box-shadow: 0 0 0 4px var(--accent-soft);
+      }
+
+      input:required:invalid:not(:placeholder-shown),
+      select:required:invalid,
+      textarea:required:invalid:not(:placeholder-shown) {
+        border-color: var(--danger);
+      }
+
+      .form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-top: 32px;
+        padding-top: 26px;
+        border-top: 1px solid #e8edf4;
+      }
+
+      .required-note {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      .required-note::before {
+        color: var(--accent);
+        content: "* ";
+        font-weight: 800;
+      }
+
+      .primary-button {
+        min-height: 48px;
+        padding: 0 22px;
+        border: 0;
+        border-radius: var(--radius-md);
+        color: #fff;
+        background: var(--accent);
+        box-shadow: 0 8px 18px rgba(36, 87, 214, 0.22);
+        cursor: pointer;
+        font: inherit;
+        font-weight: 730;
+        white-space: nowrap;
+        transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+      }
+
+      .primary-button:hover {
+        background: var(--accent-dark);
+        box-shadow: 0 10px 22px rgba(36, 87, 214, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .primary-button:active {
+        box-shadow: 0 5px 12px rgba(36, 87, 214, 0.2);
+        transform: translateY(0);
+      }
+
+      .primary-button:focus-visible {
+        outline: 3px solid rgba(36, 87, 214, 0.25);
+        outline-offset: 3px;
+      }
+
+      @media (max-width: 680px) {
+        body {
+          padding: 18px 12px;
+        }
+
+        .form-header,
+        form {
+          padding-right: 22px;
+          padding-left: 22px;
+        }
+
+        .field-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .field--full {
+          grid-column: auto;
+        }
+
+        .form-footer {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .primary-button {
+          width: 100%;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="form-card" aria-labelledby="page-title">
+        <header class="form-header">
+          <p class="eyebrow">ProtocolApp</p>
+          <h1 id="page-title">Protokół przekazania sprzętu</h1>
+          <p class="form-intro">Wprowadź dane urządzenia i osoby, aby przygotować protokół wydania lub zdania sprzętu.</p>
+        </header>
+
+        <form id="protocol-form" action="#" method="post">
+          <section class="form-section" aria-labelledby="protocol-details-heading">
+            <h2 class="section-heading" id="protocol-details-heading">Dane protokołu</h2>
+            <div class="field-grid">
+              <div class="field">
+                <label for="typ-protokolu">Typ protokołu</label>
+                <select id="typ-protokolu" name="typ_protokolu" required>
+                  <option value="" selected disabled>Wybierz typ protokołu</option>
+                  <option value="wydanie">Wydanie</option>
+                  <option value="zdanie">Zdanie</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="data">Data</label>
+                <input id="data" name="data" type="date" required>
+              </div>
+
+              <div class="field">
+                <label for="imie-nazwisko">Imię i Nazwisko</label>
+                <input id="imie-nazwisko" name="imie_nazwisko" type="text" autocomplete="name" placeholder="np. Jan Kowalski" required>
+              </div>
+
+              <div class="field">
+                <label for="pesel">PESEL</label>
+                <input id="pesel" name="pesel" type="text" inputmode="numeric" autocomplete="off" maxlength="11" placeholder="Wpisz numer PESEL" required>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section" aria-labelledby="equipment-details-heading">
+            <h2 class="section-heading" id="equipment-details-heading">Specyfikacja sprzętu</h2>
+            <div class="field-grid">
+              <div class="field field--full">
+                <label for="nazwa-model-komputera">Nazwa i model komputera</label>
+                <input id="nazwa-model-komputera" name="nazwa_model_komputera" type="text" placeholder="np. Dell OptiPlex 3050">
+              </div>
+
+              <div class="field">
+                <label for="numer-serwisowy">Numer serwisowy</label>
+                <input id="numer-serwisowy" name="numer_serwisowy" type="text" placeholder="Wpisz numer serwisowy">
+              </div>
+
+              <div class="field">
+                <label for="wartosc-przekazanego-sprzetu">Wartość przekazanego sprzętu</label>
+                <input id="wartosc-przekazanego-sprzetu" name="wartosc_przekazanego_sprzetu" type="text" inputmode="decimal" placeholder="np. 1000 zł">
+              </div>
+
+              <div class="field">
+                <label for="ladowarka-zasilacz">Ładowarka/zasilacz</label>
+                <select id="ladowarka-zasilacz" name="ladowarka_zasilacz">
+                  <option value="" selected disabled>Wybierz</option>
+                  <option value="TAK">TAK</option>
+                  <option value="NIE">NIE</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="monitor">Monitor</label>
+                <select id="monitor" name="monitor">
+                  <option value="" selected disabled>Wybierz</option>
+                  <option value="TAK">TAK</option>
+                  <option value="NIE">NIE</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="klawiatura">Klawiatura</label>
+                <select id="klawiatura" name="klawiatura">
+                  <option value="" selected disabled>Wybierz</option>
+                  <option value="TAK">TAK</option>
+                  <option value="NIE">NIE</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="mysz">Mysz</label>
+                <select id="mysz" name="mysz">
+                  <option value="" selected disabled>Wybierz</option>
+                  <option value="TAK">TAK</option>
+                  <option value="NIE">NIE</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="sluchawki-usb">Słuchawki USB</label>
+                <input id="sluchawki-usb" name="sluchawki_usb" type="text" placeholder="np. TAK / NIE lub opis">
+              </div>
+
+              <div class="field field--full">
+                <label for="uwagi">UWAGI</label>
+                <textarea id="uwagi" name="uwagi" placeholder="Opisz ewentualne ślady użytkowania lub dodatkowe informacje"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <footer class="form-footer">
+            <p class="required-note">Pola oznaczone gwiazdką są wymagane.</p>
+            <button class="primary-button" id="generuj-protokol" type="submit">Generuj Protokół</button>
+          </footer>
+        </form>
+      </section>
+    </main>
+
+    <script>
+      const protocolForm = document.getElementById('protocol-form');
+      const generateButton = document.getElementById('generuj-protokol');
+
+      const getFieldValue = (id) => document.getElementById(id).value.trim();
+
+      const getProtocolData = () => ({
+        typProtokolu: getFieldValue('typ-protokolu'),
+        ImieNazwisko: getFieldValue('imie-nazwisko'),
+        PESEL: getFieldValue('pesel'),
+        Data: getFieldValue('data'),
+        ModelKomputera: getFieldValue('nazwa-model-komputera'),
+        NumerSerwisowy: getFieldValue('numer-serwisowy'),
+        Ladowarka: getFieldValue('ladowarka-zasilacz'),
+        Monitor: getFieldValue('monitor'),
+        Klawiatura: getFieldValue('klawiatura'),
+        Mysz: getFieldValue('mysz'),
+        Sluchawki: getFieldValue('sluchawki-usb'),
+        Wartosc: getFieldValue('wartosc-przekazanego-sprzetu'),
+        Uwagi: getFieldValue('uwagi')
+      });
+
+      const getSafeFileName = (name) => {
+        const safeName = name
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-zA-Z0-9]+/g, '_')
+          .replace(/^_+|_+$/g, '');
+
+        return safeName || 'Uzytkownik';
+      };
+
+      const downloadBlob = (blob, fileName) => {
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(downloadUrl);
+      };
+
+      protocolForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        if (!protocolForm.reportValidity()) {
+          return;
+        }
+
+        const protocolData = getProtocolData();
+        generateButton.disabled = true;
+        generateButton.textContent = 'Generowanie...';
+
+        try {
+          const response = await fetch('/api/protokoly/generuj', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(protocolData)
+          });
+
+          if (!response.ok) {
+            const errorBody = await response.json().catch(() => ({}));
+            throw new Error(errorBody.error || 'Nie udało się wygenerować protokołu.');
+          }
+
+          const outputBlob = await response.blob();
+          downloadBlob(outputBlob, `Protokol_${getSafeFileName(protocolData.ImieNazwisko)}.pdf`);
+        } catch (error) {
+          console.error(error);
+          window.alert(error.message);
+        } finally {
+          generateButton.disabled = false;
+          generateButton.textContent = 'Generuj Protokół';
+        }
+      });
+    </script>
+  </body>
+</html>
