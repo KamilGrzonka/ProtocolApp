@@ -5,12 +5,15 @@
   "description": "Aplikacja webowa do generowania protokołów przekazania sprzętu.",
   "main": "server.js",
   "scripts": {
+    "test": "node --test",
     "start": "node server.js",
     "dev": "node --watch server.js"
   },
   "dependencies": {
     "docxtemplater": "^3.69.0",
+    "dotenv": "^16.6.1",
     "express": "^5.1.0",
+    "firebase-admin": "^13.4.0",
     "pizzip": "^3.1.7"
   }
 }

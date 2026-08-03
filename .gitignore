@@ -290,6 +290,11 @@ node_modules/
 .pnpm-store/
 .tools/
 
+# Local environment variables and secrets
+.env
+.env.*
+!.env.example
+
 # Visual Studio 6 build log
 *.plg
 

@@ -61,6 +61,191 @@
         box-shadow: var(--shadow);
       }
 
+      [hidden] {
+        display: none !important;
+      }
+
+      .auth-card {
+        max-width: 520px;
+        margin: 0 auto;
+      }
+
+      .auth-content {
+        padding: 32px 40px 38px;
+      }
+
+      .auth-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 24px;
+      }
+
+      .secondary-button {
+        min-height: 44px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: var(--radius-md);
+        color: var(--accent);
+        background: transparent;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .secondary-button:hover,
+      .secondary-button:focus-visible {
+        background: var(--accent-soft);
+      }
+
+      .auth-message {
+        min-height: 24px;
+        margin: 18px 0 0;
+        color: var(--danger);
+        font-size: 13px;
+      }
+
+      .account-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 22px;
+        padding-top: 18px;
+        border-top: 1px solid #e8edf4;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      .logout-button {
+        min-height: 34px;
+        padding: 0 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text-muted);
+        background: #fff;
+        cursor: pointer;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .logout-button:hover,
+      .logout-button:focus-visible {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .archive-section {
+        padding: 28px 40px 34px;
+        border-top: 1px solid #e8edf4;
+      }
+
+      .archive-header {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 18px;
+      }
+
+      .archive-heading {
+        margin: 0;
+        color: #25324a;
+        font-size: 19px;
+        font-weight: 760;
+        letter-spacing: -0.02em;
+      }
+
+      .archive-description {
+        margin: 5px 0 0;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      .archive-filter {
+        width: auto;
+        min-width: 150px;
+        min-height: 40px;
+        background: #fff;
+        font-size: 13px;
+      }
+
+      .archive-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .archive-item {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: center;
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--surface-muted);
+      }
+
+      .archive-item-title {
+        margin: 0;
+        overflow: hidden;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 750;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .archive-item-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px 12px;
+        margin: 4px 0 0;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      .archive-item-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .archive-action {
+        min-height: 34px;
+        padding: 0 11px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--accent);
+        background: #fff;
+        cursor: pointer;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 720;
+      }
+
+      .archive-action:hover,
+      .archive-action:focus-visible {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      .archive-action--complete {
+        color: var(--text-muted);
+      }
+
+      .empty-state {
+        margin: 10px 0 0;
+        padding: 24px;
+        border: 1px dashed var(--border-strong);
+        border-radius: var(--radius-md);
+        color: var(--text-muted);
+        text-align: center;
+        font-size: 13px;
+      }
+
       .form-header {
         padding: 34px 40px 30px;
         border-bottom: 1px solid #e5ebf3;
@@ -259,9 +444,33 @@
         }
 
         .form-header,
-        form {
+        form,
+        .auth-content,
+        .archive-section {
           padding-right: 22px;
           padding-left: 22px;
+        }
+
+        .archive-header {
+          align-items: stretch;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .archive-filter {
+          width: 100%;
+        }
+
+        .archive-item {
+          grid-template-columns: 1fr;
+        }
+
+        .archive-item-actions {
+          width: 100%;
+        }
+
+        .archive-action {
+          flex: 1;
         }
 
         .field-grid {
@@ -294,11 +503,42 @@
   </head>
   <body>
     <main class="page-shell">
-      <section class="form-card" aria-labelledby="page-title">
+      <section class="form-card auth-card" id="auth-card" aria-labelledby="auth-title">
+        <header class="form-header">
+          <p class="eyebrow">ProtocolApp</p>
+          <h1 id="auth-title">Zaloguj się</h1>
+          <p class="form-intro" id="auth-intro">Zaloguj się, aby generować i przeglądać swoje protokoły.</p>
+        </header>
+        <div class="auth-content">
+          <form id="auth-form">
+            <div class="field-grid">
+              <div class="field field--full">
+                <label for="auth-email">Adres e-mail</label>
+                <input id="auth-email" type="email" autocomplete="email" placeholder="np. jan.kowalski@firma.pl" required>
+              </div>
+              <div class="field field--full">
+                <label for="auth-password">Hasło</label>
+                <input id="auth-password" type="password" autocomplete="current-password" placeholder="Wpisz hasło" required minlength="6">
+              </div>
+            </div>
+            <p class="auth-message" id="auth-message" role="alert"></p>
+            <div class="auth-actions">
+              <button class="primary-button" id="auth-submit" type="submit">Zaloguj się</button>
+              <button class="secondary-button" id="auth-toggle" type="button">Utwórz konto</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="form-card" id="app-card" aria-labelledby="page-title" hidden>
         <header class="form-header">
           <p class="eyebrow">ProtocolApp</p>
           <h1 id="page-title">Protokół przekazania sprzętu</h1>
           <p class="form-intro">Wprowadź dane urządzenia i osoby, aby przygotować protokół wydania lub zdania sprzętu.</p>
+          <div class="account-bar">
+            <span>Zalogowany: <strong id="account-email"></strong></span>
+            <button class="logout-button" id="logout-button" type="button">Wyloguj</button>
+          </div>
         </header>
 
         <form id="protocol-form" action="#" method="post">
@@ -402,85 +642,26 @@
             <button class="primary-button" id="generuj-protokol" type="submit">Generuj Protokół</button>
           </footer>
         </form>
+
+        <section class="archive-section" aria-labelledby="archive-heading">
+          <div class="archive-header">
+            <div>
+              <h2 class="archive-heading" id="archive-heading">Moje wygenerowane protokoły</h2>
+              <p class="archive-description">Pliki oczekujące są przechowywane w Firebase Storage.</p>
+            </div>
+            <select class="archive-filter" id="archive-filter" aria-label="Filtruj protokoły">
+              <option value="all">Wszystkie</option>
+              <option value="wydanie">Wydanie</option>
+              <option value="zdanie">Zdanie</option>
+            </select>
+          </div>
+          <div class="archive-list" id="archive-list" aria-live="polite">
+            <p class="empty-state">Ładowanie listy...</p>
+          </div>
+        </section>
       </section>
     </main>
 
-    <script>
-      const protocolForm = document.getElementById('protocol-form');
-      const generateButton = document.getElementById('generuj-protokol');
-
-      const getFieldValue = (id) => document.getElementById(id).value.trim();
-
-      const getProtocolData = () => ({
-        typProtokolu: getFieldValue('typ-protokolu'),
-        ImieNazwisko: getFieldValue('imie-nazwisko'),
-        PESEL: getFieldValue('pesel'),
-        Data: getFieldValue('data'),
-        ModelKomputera: getFieldValue('nazwa-model-komputera'),
-        NumerSerwisowy: getFieldValue('numer-serwisowy'),
-        Ladowarka: getFieldValue('ladowarka-zasilacz'),
-        Monitor: getFieldValue('monitor'),
-        Klawiatura: getFieldValue('klawiatura'),
-        Mysz: getFieldValue('mysz'),
-        Sluchawki: getFieldValue('sluchawki-usb'),
-        Wartosc: getFieldValue('wartosc-przekazanego-sprzetu'),
-        Uwagi: getFieldValue('uwagi')
-      });
-
-      const getSafeFileName = (name) => {
-        const safeName = name
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/[^a-zA-Z0-9]+/g, '_')
-          .replace(/^_+|_+$/g, '');
-
-        return safeName || 'Uzytkownik';
-      };
-
-      const downloadBlob = (blob, fileName) => {
-        const downloadUrl = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(downloadUrl);
-      };
-
-      protocolForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        if (!protocolForm.reportValidity()) {
-          return;
-        }
-
-        const protocolData = getProtocolData();
-        generateButton.disabled = true;
-        generateButton.textContent = 'Generowanie...';
-
-        try {
-          const response = await fetch('/api/protokoly/generuj', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(protocolData)
-          });
-
-          if (!response.ok) {
-            const errorBody = await response.json().catch(() => ({}));
-            throw new Error(errorBody.error || 'Nie udało się wygenerować protokołu.');
-          }
-
-          const outputBlob = await response.blob();
-          downloadBlob(outputBlob, `Protokol_${getSafeFileName(protocolData.ImieNazwisko)}.pdf`);
-        } catch (error) {
-          console.error(error);
-          window.alert(error.message);
-        } finally {
-          generateButton.disabled = false;
-          generateButton.textContent = 'Generuj Protokół';
-        }
-      });
-    </script>
+    <script type="module" src="/app.js"></script>
   </body>
 </html>
