@@ -1,0 +1,16 @@
+{
+  "name": "protocol-pdf-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Secret-protected LibreOffice DOCX to PDF conversion worker.",
+  "main": "server.cjs",
+  "scripts": {
+    "start": "node server.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
