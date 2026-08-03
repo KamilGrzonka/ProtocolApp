@@ -44,3 +44,9 @@ Local smoke test: GET http://127.0.0.1:3101/health
 ## Scope
 
 Only Task 4 files were changed. Task 5 was not started. No secrets were added to tracked files.
+
+## Follow-up: Netlify synchronous timeout
+
+Netlify documents a non-configurable 60-second synchronous function execution limit. The worker client now aborts its outbound conversion request after 55 seconds, leaving time to send the controlled 504 response before the platform can terminate the function. The focused `test/worker-client.test.cjs` covers the 55-second default and timeout-to-504 mapping. The archive UI now correctly describes protected Netlify Blobs storage; Firebase Storage is not required.
+
+Source: https://docs.netlify.com/build/functions/configuration/?fn-language=js
