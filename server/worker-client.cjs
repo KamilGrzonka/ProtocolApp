@@ -1,6 +1,6 @@
 const { HttpError } = require('./http-error.cjs');
 
-const WORKER_FETCH_TIMEOUT_MS = 55_000;
+const WORKER_FETCH_TIMEOUT_MS = 45_000;
 const workerUnavailableMessage = 'Konwerter PDF jest chwilowo niedostępny.';
 const workerTimeoutMessage = 'Konwersja dokumentu do PDF przekroczyła limit czasu.';
 

@@ -47,6 +47,10 @@ Only Task 4 files were changed. Task 5 was not started. No secrets were added to
 
 ## Follow-up: Netlify synchronous timeout
 
-Netlify documents a non-configurable 60-second synchronous function execution limit. The worker client now aborts its outbound conversion request after 55 seconds, leaving time to send the controlled 504 response before the platform can terminate the function. The focused `test/worker-client.test.cjs` covers the 55-second default and timeout-to-504 mapping. The archive UI now correctly describes protected Netlify Blobs storage; Firebase Storage is not required.
+Netlify documents a non-configurable 60-second synchronous function execution limit. An earlier follow-up reduced the worker client's outbound conversion timeout to 55 seconds to leave time for a controlled 504 response before the platform can terminate the function. The archive UI now correctly describes protected Netlify Blobs storage; Firebase Storage is not required.
 
 Source: https://docs.netlify.com/build/functions/configuration/?fn-language=js
+
+## Follow-up: reserve Netlify execution overhead
+
+The worker fetch timeout is reduced from 55 seconds to 45 seconds. This reserves approximately 15 seconds of the 60-second synchronous Netlify Function limit for DOCX rendering, Netlify Blobs storage, Firestore metadata operations, and returning the controlled 504 response. The focused worker-client test now verifies the 45-second default.
