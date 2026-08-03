@@ -232,6 +232,66 @@ test('downloads a PDF from the requesting user protocol', async () => {
   assert.deepEqual(download.pdfBuffer, Buffer.from('pdf'));
 });
 
+test('returns 404 when PDF storage has no file for an existing protocol', async () => {
+  const service = createProtocolService({
+    firestore: {
+      collection: () => ({
+        doc: () => ({
+          collection: () => ({
+            doc: () => ({
+              async get() {
+                return {
+                  exists: true,
+                  data: () => ({
+                    fileName: 'missing.pdf',
+                    blobKey: 'users/user-1/protocols/missing.pdf'
+                  })
+                };
+              }
+            })
+          })
+        })
+      })
+    },
+    pdfStore: { async get() { return null; } }
+  });
+
+  await assert.rejects(
+    () => service.download({ uid: 'user-1', protocolId: 'missing' }),
+    { status: 404, message: 'Nie znaleziono pliku PDF protokołu.' }
+  );
+});
+
+test('returns 404 when PDF storage returns undefined for an existing protocol', async () => {
+  const service = createProtocolService({
+    firestore: {
+      collection: () => ({
+        doc: () => ({
+          collection: () => ({
+            doc: () => ({
+              async get() {
+                return {
+                  exists: true,
+                  data: () => ({
+                    fileName: 'missing.pdf',
+                    blobKey: 'users/user-1/protocols/missing.pdf'
+                  })
+                };
+              }
+            })
+          })
+        })
+      })
+    },
+    pdfStore: { async get() {} }
+  });
+
+  await assert.rejects(
+    () => service.download({ uid: 'user-1', protocolId: 'missing' }),
+    { status: 404, message: 'Nie znaleziono pliku PDF protokołu.' }
+  );
+});
+
 test('downloads an existing PDF that was stored with the legacy storage path', async () => {
   let requestedBlobKey;
   const service = createProtocolService({

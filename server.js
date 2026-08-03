@@ -10,6 +10,7 @@ const { getLibreOfficeTimeoutMs } = require('./server/conversion-config.cjs');
 const { initializeFirebaseAdmin } = require('./server/firebase-admin.cjs');
 const { HttpError } = require('./server/http-error.cjs');
 const { createProtocolService } = require('./server/protocol-service.cjs');
+const { createLocalPdfStore } = require('./server/storage/local.cjs');
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
@@ -29,20 +30,16 @@ const firebaseClientConfig = Object.freeze({
   apiKey: process.env.FIREBASE_API_KEY || '',
   authDomain: process.env.FIREBASE_AUTH_DOMAIN || '',
   projectId: process.env.FIREBASE_PROJECT_ID || '',
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET || '',
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || '',
   appId: process.env.FIREBASE_APP_ID || '',
   measurementId: process.env.FIREBASE_MEASUREMENT_ID || ''
 });
 
-const { admin, firestore, verifyIdToken } = initializeFirebaseAdmin(process.env);
-const storageBucket = firestore && process.env.FIREBASE_STORAGE_BUCKET
-  ? admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET)
-  : null;
-const firebaseReady = Boolean(firestore && storageBucket);
+const { firestore, verifyIdToken } = initializeFirebaseAdmin(process.env);
+const firebaseReady = Boolean(firestore);
 
 if (!firebaseReady) {
-  console.warn('Firebase jest nieaktywny: uzupełnij dane Admin SDK i nazwę bucketu w pliku .env.');
+  console.warn('Firebase jest nieaktywny: uzupełnij dane Admin SDK w pliku .env.');
 }
 
 const convertDocxToPdf = async (docxBuffer) => {
@@ -77,18 +74,9 @@ const convertDocxToPdf = async (docxBuffer) => {
   }
 };
 
-const pdfStore = storageBucket && {
-  async put(blobKey, pdfBuffer, metadata) {
-    await storageBucket.file(blobKey).save(pdfBuffer, { resumable: false, metadata });
-  },
-  async get(blobKey) {
-    const [pdfBuffer] = await storageBucket.file(blobKey).download();
-    return pdfBuffer;
-  },
-  async delete(blobKey, { ignoreMissing }) {
-    await storageBucket.file(blobKey).delete({ ignoreNotFound: ignoreMissing });
-  }
-};
+const pdfStore = createLocalPdfStore({
+  rootDirectory: path.join(rootDir, 'storage', 'pdfs')
+});
 
 const protocolService = firebaseReady
   ? createProtocolService({

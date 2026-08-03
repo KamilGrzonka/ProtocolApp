@@ -108,6 +108,10 @@ const createProtocolService = ({
       const { protocol } = await getProtocol(uid, protocolId);
       const pdfBuffer = await pdfStore.get(getBlobKey(protocol));
 
+      if (pdfBuffer == null) {
+        throw new HttpError(404, 'Nie znaleziono pliku PDF protokołu.');
+      }
+
       return { pdfBuffer, fileName: protocol.fileName };
     },
 
