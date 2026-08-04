@@ -4,20 +4,20 @@ const toArrayBuffer = (buffer) => buffer.buffer.slice(
 );
 
 const createNetlifyBlobsPdfStore = ({ getStore, storeName = 'protocol-pdfs' }) => {
-  const store = getStore(storeName);
+  const getConfiguredStore = () => getStore(storeName);
 
   return {
     async put(key, buffer, metadata) {
-      await store.set(key, toArrayBuffer(buffer), { metadata });
+      await getConfiguredStore().set(key, toArrayBuffer(buffer), { metadata });
     },
 
     async get(key) {
-      const pdfBytes = await store.get(key, { type: 'arrayBuffer' });
+      const pdfBytes = await getConfiguredStore().get(key, { type: 'arrayBuffer' });
       return pdfBytes === null ? null : Buffer.from(pdfBytes);
     },
 
     async delete(key, _options = {}) {
-      await store.delete(key);
+      await getConfiguredStore().delete(key);
     }
   };
 };

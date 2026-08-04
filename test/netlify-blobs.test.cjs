@@ -6,6 +6,25 @@ const test = require('node:test');
 const { createNetlifyBlobsPdfStore } = require('../server/storage/netlify-blobs.cjs');
 const { createLocalPdfStore } = require('../server/storage/local.cjs');
 
+test('opens the Netlify Blobs store only when a request uses the adapter', async () => {
+  let getStoreCalls = 0;
+  const pdfStore = createNetlifyBlobsPdfStore({
+    getStore() {
+      getStoreCalls += 1;
+      return {
+        async get() {
+          return null;
+        }
+      };
+    },
+    storeName: 'protocol-pdfs'
+  });
+
+  assert.equal(getStoreCalls, 0);
+  assert.equal(await pdfStore.get('users/u/protocols/missing.pdf'), null);
+  assert.equal(getStoreCalls, 1);
+});
+
 test('writes PDF bytes and content type metadata to the protocol Blobs store', async () => {
   let requestedStoreName;
   let setArguments;
