@@ -100,6 +100,24 @@
         background: var(--accent-soft);
       }
 
+      .auth-reset {
+        display: block;
+        margin: 14px 0 0 auto;
+        padding: 0;
+        border: 0;
+        color: var(--accent);
+        background: transparent;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .auth-reset:hover,
+      .auth-reset:focus-visible {
+        text-decoration: underline;
+      }
+
       .auth-message {
         min-height: 24px;
         margin: 18px 0 0;
@@ -521,6 +539,7 @@
                 <input id="auth-password" type="password" autocomplete="current-password" placeholder="Wpisz hasło" required minlength="6">
               </div>
             </div>
+            <button class="auth-reset" id="auth-password-reset" type="button">Nie pamiętam hasła?</button>
             <p class="auth-message" id="auth-message" role="alert"></p>
             <div class="auth-actions">
               <button class="primary-button" id="auth-submit" type="submit">Zaloguj się</button>

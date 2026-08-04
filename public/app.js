@@ -3,6 +3,7 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut
 } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js';
@@ -20,6 +21,7 @@ const authIntro = document.getElementById('auth-intro');
 const authMessage = document.getElementById('auth-message');
 const authSubmit = document.getElementById('auth-submit');
 const authToggle = document.getElementById('auth-toggle');
+const authPasswordReset = document.getElementById('auth-password-reset');
 const accountEmail = document.getElementById('account-email');
 const logoutButton = document.getElementById('logout-button');
 const protocolForm = document.getElementById('protocol-form');
@@ -44,6 +46,7 @@ const setAuthMode = (mode) => {
   authSubmit.textContent = isRegister ? 'Utwórz konto' : 'Zaloguj się';
   authToggle.textContent = isRegister ? 'Mam już konto' : 'Utwórz konto';
   authPassword.autocomplete = isRegister ? 'new-password' : 'current-password';
+  authPasswordReset.hidden = authMode !== 'login';
   setAuthMessage();
 };
 
@@ -183,6 +186,28 @@ const showLogin = () => {
 authToggle.addEventListener('click', () => {
   setAuthMode(authMode === 'login' ? 'register' : 'login');
 });
+
+const requestPasswordReset = async () => {
+  const email = authEmail.value.trim();
+  if (!email || !authEmail.checkValidity()) {
+    setAuthMessage('Podaj poprawny adres e-mail, aby zresetować hasło.');
+    authEmail.focus();
+    return;
+  }
+
+  authPasswordReset.disabled = true;
+  try {
+    await sendPasswordResetEmail(firebaseAuth, email);
+    setAuthMessage('Jeśli konto istnieje, instrukcja resetu hasła została wysłana na podany adres e-mail.');
+  } catch (error) {
+    console.error('Firebase password reset error:', error);
+    setAuthMessage(getAuthErrorMessage(error));
+  } finally {
+    authPasswordReset.disabled = false;
+  }
+};
+
+authPasswordReset.addEventListener('click', requestPasswordReset);
 
 authForm.addEventListener('submit', async (event) => {
   event.preventDefault();

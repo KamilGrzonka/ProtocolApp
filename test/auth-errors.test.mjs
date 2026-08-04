@@ -16,6 +16,20 @@ test('includes the Firebase code for an unrecognized authentication error', () =
   );
 });
 
+test('formats a password reset error for an invalid e-mail', () => {
+  assert.equal(
+    getAuthErrorMessage({ code: 'auth/invalid-email' }),
+    'Podaj poprawny adres e-mail.'
+  );
+});
+
+test('formats a password reset error when Firebase rate-limits requests', () => {
+  assert.equal(
+    getAuthErrorMessage({ code: 'auth/too-many-requests' }),
+    'Wykonano zbyt wiele prób. Poczekaj chwilę i spróbuj ponownie.'
+  );
+});
+
 test('formats a converter unavailable error for a cold worker', () => {
   assert.equal(
     getGenerationErrorMessage({ status: 503, error: 'Konwerter PDF jest chwilowo niedostępny.' }),

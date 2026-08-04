@@ -8,7 +8,8 @@ const authErrorMessages = {
   'auth/invalid-credential': 'Nieprawidłowy e-mail lub hasło.',
   'auth/email-already-in-use': 'Konto z tym adresem e-mail już istnieje.',
   'auth/weak-password': 'Hasło musi mieć co najmniej 6 znaków.',
-  'auth/invalid-email': 'Podaj poprawny adres e-mail.'
+  'auth/invalid-email': 'Podaj poprawny adres e-mail.',
+  'auth/too-many-requests': 'Wykonano zbyt wiele prób. Poczekaj chwilę i spróbuj ponownie.'
 };
 
 export const getAuthErrorMessage = (error) => {
