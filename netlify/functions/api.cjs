@@ -1,10 +1,11 @@
 const path = require('node:path');
-const { getStore } = require('@netlify/blobs');
+const { connectLambda, getStore } = require('@netlify/blobs');
 const serverless = require('serverless-http');
 const { createProtocolApp } = require('../../server/app.cjs');
 const { initializeFirebaseAdmin } = require('../../server/firebase-admin.cjs');
 const { createProtocolService } = require('../../server/protocol-service.cjs');
 const { createNetlifyBlobsPdfStore } = require('../../server/storage/netlify-blobs.cjs');
+const { createNetlifyHandler } = require('../../server/netlify-handler.cjs');
 const { createWorkerPdfConverter } = require('../../server/worker-client.cjs');
 
 const firebaseClientConfig = Object.freeze({
@@ -34,4 +35,7 @@ const protocolService = firestore
 
 const app = createProtocolApp({ protocolService, verifyIdToken, firebaseClientConfig });
 
-exports.handler = serverless(app, { binary: ['application/pdf'] });
+exports.handler = createNetlifyHandler({
+  connectLambda,
+  appHandler: serverless(app, { binary: ['application/pdf'] })
+});
