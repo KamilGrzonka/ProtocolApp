@@ -17,3 +17,19 @@ export const getAuthErrorMessage = (error) => {
   if (code) return `Firebase zgłosił błąd ${code}. Sprawdź konfigurację Firebase i spróbuj ponownie.`;
   return 'Nie udało się wykonać operacji logowania.';
 };
+
+export const getGenerationErrorMessage = ({ status, error } = {}) => {
+  if (status === 503) {
+    return 'Konwerter PDF się uruchamia. Poczekaj chwilę i spróbuj ponownie.';
+  }
+
+  if (status === 504) {
+    return 'Konwersja dokumentu PDF trwała zbyt długo. Spróbuj ponownie.';
+  }
+
+  if (status >= 500) {
+    return 'Nie udało się wygenerować dokumentu PDF. Spróbuj ponownie.';
+  }
+
+  return error || 'Nie udało się wygenerować dokumentu PDF. Spróbuj ponownie.';
+};
