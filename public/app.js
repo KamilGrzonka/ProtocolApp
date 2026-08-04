@@ -3,10 +3,13 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut
 } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js';
-import { getAuthErrorMessage } from './auth-errors.mjs';
+import { getAuthErrorMessage, getGenerationErrorMessage } from './auth-errors.mjs';
+
+export { getGenerationErrorMessage };
 
 const authCard = document.getElementById('auth-card');
 const appCard = document.getElementById('app-card');
@@ -18,6 +21,7 @@ const authIntro = document.getElementById('auth-intro');
 const authMessage = document.getElementById('auth-message');
 const authSubmit = document.getElementById('auth-submit');
 const authToggle = document.getElementById('auth-toggle');
+const authPasswordReset = document.getElementById('auth-password-reset');
 const accountEmail = document.getElementById('account-email');
 const logoutButton = document.getElementById('logout-button');
 const protocolForm = document.getElementById('protocol-form');
@@ -42,6 +46,7 @@ const setAuthMode = (mode) => {
   authSubmit.textContent = isRegister ? 'Utwórz konto' : 'Zaloguj się';
   authToggle.textContent = isRegister ? 'Mam już konto' : 'Utwórz konto';
   authPassword.autocomplete = isRegister ? 'new-password' : 'current-password';
+  authPasswordReset.hidden = authMode !== 'login';
   setAuthMessage();
 };
 
@@ -100,6 +105,11 @@ const apiFetch = async (url, options = {}) => {
 const getApiError = async (response, fallback) => {
   const body = await response.json().catch(() => ({}));
   return body.error || fallback;
+};
+
+const getGenerationResponseError = async (response) => {
+  const body = await response.json().catch(() => ({}));
+  return getGenerationErrorMessage({ status: response.status, error: body.error });
 };
 
 const formatDate = (dateValue) => {
@@ -177,6 +187,28 @@ authToggle.addEventListener('click', () => {
   setAuthMode(authMode === 'login' ? 'register' : 'login');
 });
 
+const requestPasswordReset = async () => {
+  const email = authEmail.value.trim();
+  if (!email || !authEmail.checkValidity()) {
+    setAuthMessage('Podaj poprawny adres e-mail, aby zresetować hasło.');
+    authEmail.focus();
+    return;
+  }
+
+  authPasswordReset.disabled = true;
+  try {
+    await sendPasswordResetEmail(firebaseAuth, email);
+    setAuthMessage('Jeśli konto istnieje, instrukcja resetu hasła została wysłana na podany adres e-mail.');
+  } catch (error) {
+    console.error('Firebase password reset error:', error);
+    setAuthMessage(getAuthErrorMessage(error));
+  } finally {
+    authPasswordReset.disabled = false;
+  }
+};
+
+authPasswordReset.addEventListener('click', requestPasswordReset);
+
 authForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   if (!authForm.reportValidity()) return;
@@ -210,6 +242,9 @@ protocolForm.addEventListener('submit', async (event) => {
   const protocolData = getProtocolData();
   generateButton.disabled = true;
   generateButton.textContent = 'Generowanie...';
+  const converterStartingTimer = window.setTimeout(() => {
+    generateButton.textContent = 'Konwerter się uruchamia...';
+  }, 8_000);
 
   try {
     const response = await apiFetch('/api/protokoly/generuj', {
@@ -219,7 +254,7 @@ protocolForm.addEventListener('submit', async (event) => {
     });
 
     if (!response.ok) {
-      throw new Error(await getApiError(response, 'Nie udało się wygenerować protokołu.'));
+      throw new Error(await getGenerationResponseError(response));
     }
 
     downloadBlob(await response.blob(), `Protokol_${getSafeFileName(protocolData.ImieNazwisko)}.pdf`);
@@ -227,6 +262,7 @@ protocolForm.addEventListener('submit', async (event) => {
   } catch (error) {
     window.alert(error.message);
   } finally {
+    window.clearTimeout(converterStartingTimer);
     generateButton.disabled = false;
     generateButton.textContent = 'Generuj Protokół';
   }

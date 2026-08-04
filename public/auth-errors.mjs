@@ -8,7 +8,8 @@ const authErrorMessages = {
   'auth/invalid-credential': 'Nieprawidłowy e-mail lub hasło.',
   'auth/email-already-in-use': 'Konto z tym adresem e-mail już istnieje.',
   'auth/weak-password': 'Hasło musi mieć co najmniej 6 znaków.',
-  'auth/invalid-email': 'Podaj poprawny adres e-mail.'
+  'auth/invalid-email': 'Podaj poprawny adres e-mail.',
+  'auth/too-many-requests': 'Wykonano zbyt wiele prób. Poczekaj chwilę i spróbuj ponownie.'
 };
 
 export const getAuthErrorMessage = (error) => {
@@ -16,4 +17,20 @@ export const getAuthErrorMessage = (error) => {
   if (authErrorMessages[code]) return authErrorMessages[code];
   if (code) return `Firebase zgłosił błąd ${code}. Sprawdź konfigurację Firebase i spróbuj ponownie.`;
   return 'Nie udało się wykonać operacji logowania.';
+};
+
+export const getGenerationErrorMessage = ({ status, error } = {}) => {
+  if (status === 503) {
+    return 'Konwerter PDF się uruchamia. Poczekaj chwilę i spróbuj ponownie.';
+  }
+
+  if (status === 504) {
+    return 'Konwersja dokumentu PDF trwała zbyt długo. Spróbuj ponownie.';
+  }
+
+  if (status >= 500) {
+    return 'Nie udało się wygenerować dokumentu PDF. Spróbuj ponownie.';
+  }
+
+  return error || 'Nie udało się wygenerować dokumentu PDF. Spróbuj ponownie.';
 };
