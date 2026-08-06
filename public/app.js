@@ -8,6 +8,7 @@ import {
   signOut
 } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js';
 import { getAuthErrorMessage, getGenerationErrorMessage } from './auth-errors.mjs';
+import { getDownloadFileName } from './download-file-name.mjs';
 
 export { getGenerationErrorMessage };
 
@@ -257,7 +258,10 @@ protocolForm.addEventListener('submit', async (event) => {
       throw new Error(await getGenerationResponseError(response));
     }
 
-    downloadBlob(await response.blob(), `Protokol_${getSafeFileName(protocolData.ImieNazwisko)}.pdf`);
+    downloadBlob(
+      await response.blob(),
+      getDownloadFileName(response.headers, `Protokol_${getSafeFileName(protocolData.ImieNazwisko)}.pdf`)
+    );
     await loadArchive();
   } catch (error) {
     window.alert(error.message);
