@@ -13,6 +13,11 @@ const getSafeFileName = (name) => {
   return safeName || 'Uzytkownik';
 };
 
+const protocolTypeLabels = Object.freeze({
+  wydanie: 'Wydanie',
+  zdanie: 'Zdanie'
+});
+
 const toIsoString = (createdAt) => {
   if (!createdAt) return null;
   if (typeof createdAt.toDate === 'function') return createdAt.toDate().toISOString();
@@ -55,7 +60,7 @@ const createProtocolService = ({
       const pdfBuffer = await convertDocxToPdf(docxBuffer);
       const protocolId = createId();
       const blobKey = `users/${uid}/protocols/${protocolId}.pdf`;
-      const fileName = `Protokol_${getSafeFileName(protocolData.ImieNazwisko)}.pdf`;
+      const fileName = `Protokol_${getSafeFileName(protocolData.ImieNazwisko)}_${protocolTypeLabels[typProtokolu]}.pdf`;
       const protocolReference = getProtocolReference(uid, protocolId);
       const metadata = {
         type: typProtokolu,
