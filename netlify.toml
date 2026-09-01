@@ -3,7 +3,13 @@
   functions = "netlify/functions"
 
 [functions]
-  included_files = ["szablon_wydanie.docx", "szablon_zdanie.docx"]
+  included_files = [
+    "szablon_wydanie.docx",
+    "szablon_zdanie.docx",
+    "aterima_medusmo_szablon_wydanie.docx",
+    "aterima_nezeen_szablon_wydanie.docx",
+    "medusmo_szablon_zdanie.docx"
+  ]
 
 [[redirects]]
   from = "/api/*"
