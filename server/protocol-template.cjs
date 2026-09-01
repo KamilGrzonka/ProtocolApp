@@ -4,10 +4,32 @@ const Docxtemplater = require('docxtemplater');
 const PizZip = require('pizzip');
 const { HttpError } = require('./http-error.cjs');
 
-const templateFileNames = Object.freeze({
-  wydanie: 'szablon_wydanie.docx',
-  zdanie: 'szablon_zdanie.docx'
+const protocolTemplates = Object.freeze({
+  wydanie: Object.freeze({
+    type: 'wydanie',
+    fileName: 'szablon_wydanie.docx'
+  }),
+  aterima_medusmo_wydanie: Object.freeze({
+    type: 'wydanie',
+    fileName: 'aterima_medusmo_szablon_wydanie.docx'
+  }),
+  aterima_nezeen_wydanie: Object.freeze({
+    type: 'wydanie',
+    fileName: 'aterima_nezeen_szablon_wydanie.docx'
+  }),
+  zdanie: Object.freeze({
+    type: 'zdanie',
+    fileName: 'szablon_zdanie.docx'
+  }),
+  medusmo_zdanie: Object.freeze({
+    type: 'zdanie',
+    fileName: 'medusmo_szablon_zdanie.docx'
+  })
 });
+
+const templateFileNames = Object.freeze(Object.fromEntries(
+  Object.entries(protocolTemplates).map(([selection, template]) => [selection, template.fileName])
+));
 
 const requiredFields = Object.freeze([
   'ImieNazwisko',
@@ -25,11 +47,13 @@ const requiredFields = Object.freeze([
 ]);
 
 const validateProtocolRequest = (body) => {
-  const { typProtokolu, ...protocolData } = body || {};
+  const { typProtokolu: wariantProtokolu, ...protocolData } = body || {};
 
-  if (!Object.prototype.hasOwnProperty.call(templateFileNames, typProtokolu)) {
+  if (!Object.prototype.hasOwnProperty.call(protocolTemplates, wariantProtokolu)) {
     throw new HttpError(400, 'Nieprawidłowy typ protokołu.');
   }
+
+  const template = protocolTemplates[wariantProtokolu];
 
   const missingFields = requiredFields.filter((field) => typeof protocolData[field] !== 'string');
 
@@ -37,11 +61,15 @@ const validateProtocolRequest = (body) => {
     throw new HttpError(400, `Brak wymaganych pól: ${missingFields.join(', ')}.`);
   }
 
-  return { typProtokolu, protocolData };
+  return {
+    typProtokolu: template.type,
+    wariantProtokolu,
+    templateFileName: template.fileName,
+    protocolData
+  };
 };
 
-const renderProtocolDocx = async ({ typProtokolu, protocolData, templateDirectory }) => {
-  const templateFileName = templateFileNames[typProtokolu];
+const renderProtocolDocx = async ({ templateFileName, protocolData, templateDirectory }) => {
   const templateBuffer = await fs.readFile(path.join(templateDirectory, templateFileName));
   const zip = new PizZip(templateBuffer);
   const document = new Docxtemplater(zip, {
@@ -58,6 +86,7 @@ const renderProtocolDocx = async ({ typProtokolu, protocolData, templateDirector
 };
 
 module.exports = {
+  protocolTemplates,
   renderProtocolDocx,
   requiredFields,
   templateFileNames,

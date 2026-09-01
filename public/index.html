@@ -567,9 +567,16 @@
               <div class="field">
                 <label for="typ-protokolu">Typ protokołu</label>
                 <select id="typ-protokolu" name="typ_protokolu" required>
-                  <option value="" selected disabled>Wybierz typ protokołu</option>
-                  <option value="wydanie">Wydanie</option>
-                  <option value="zdanie">Zdanie</option>
+                  <option value="" selected disabled>Wybierz wariant protokołu</option>
+                  <optgroup label="Wydanie">
+                    <option value="wydanie">Wydanie – Nezeen / LeasingTeam Professional</option>
+                    <option value="aterima_medusmo_wydanie">Wydanie – Medusmo / ATERIMA Europe</option>
+                    <option value="aterima_nezeen_wydanie">Wydanie – Nezeen / ATERIMA Europe</option>
+                  </optgroup>
+                  <optgroup label="Zdanie">
+                    <option value="zdanie">Zdanie – Nezeen</option>
+                    <option value="medusmo_zdanie">Zdanie – Medusmo</option>
+                  </optgroup>
                 </select>
               </div>
 

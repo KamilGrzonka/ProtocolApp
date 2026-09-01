@@ -2,6 +2,8 @@
 
 ProtocolApp generuje PDF-y z prywatnych szablonów DOCX. Firebase Authentication uwierzytelnia użytkownika, Cloud Firestore przechowuje wyłącznie metadane archiwum, a zawartość PDF trafia do chronionego magazynu Netlify Blobs `protocol-pdfs`. Firebase Storage nie jest wymagany ani używany; nie twórz bucketa ani reguł Firebase Storage.
 
+Dostępnych jest pięć wariantów dokumentów: trzy protokoły wydania (Nezeen / LeasingTeam Professional, Medusmo / ATERIMA Europe i Nezeen / ATERIMA Europe) oraz dwa protokoły zdania (Nezeen i Medusmo). Wszystkie warianty korzystają z tego samego formularza, a archiwum nadal rozdziela je na główne typy `wydanie` i `zdanie`.
+
 ## Lokalne uruchomienie
 
 Wymagane są Node.js 20+, pnpm oraz LibreOffice (`soffice` w `PATH` albo lokalny `.tools/libreoffice`). Skopiuj `.env.example` do `.env` i ustaw następujące zmienne:

@@ -106,6 +106,29 @@ test('uses the zdanie suffix in the generated protocol filename', async () => {
   assert.equal(events[1].metadata.fileName, 'Protokol_Jan_Kowalski_Zdanie.pdf');
 });
 
+test('archives a company-specific template under its main protocol type', async () => {
+  const events = [];
+  const service = createProtocolService({
+    firestore: createFirestoreFake(events),
+    pdfStore: {
+      async put(blobKey, pdfBuffer, metadata) {
+        events.push({ name: 'pdfStore.put', blobKey, pdfBuffer, metadata });
+      }
+    },
+    convertDocxToPdf: async () => Buffer.from('pdf'),
+    templateDirectory: path.resolve(__dirname, '..'),
+    createId: () => 'protocol-1'
+  });
+
+  const result = await service.generate({
+    uid: 'user-1',
+    body: { ...validBody, typProtokolu: 'aterima_medusmo_wydanie' }
+  });
+
+  assert.equal(result.fileName, 'Protokol_Jan_Kowalski_Wydanie.pdf');
+  assert.equal(events[1].metadata.type, 'wydanie');
+});
+
 test('removes an uploaded PDF when metadata persistence fails', async () => {
   const events = [];
   const firestore = createFirestoreFake(events);

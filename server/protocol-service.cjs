@@ -51,9 +51,9 @@ const createProtocolService = ({
 
   return {
     async generate({ uid, body }) {
-      const { typProtokolu, protocolData } = validateProtocolRequest(body);
+      const { typProtokolu, templateFileName, protocolData } = validateProtocolRequest(body);
       const docxBuffer = await renderProtocolDocx({
-        typProtokolu,
+        templateFileName,
         protocolData,
         templateDirectory
       });
